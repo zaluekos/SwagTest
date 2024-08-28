@@ -67,7 +67,7 @@ namespace SwagLabs.PageObjects.LoginPageObject
 
         public IEnumerable<string> GetAvailableUsernames()
         {
-            IEnumerable<string> usernames = Map.ValidUsernames.Text.Split(separator: ' ', options: StringSplitOptions.TrimEntries);
+            IEnumerable<string> usernames = Map.ValidUsernames.Text.Split(separator: '\n', options: StringSplitOptions.TrimEntries);
             // Skipping the title
             usernames = usernames.Skip(1);
             return usernames;
