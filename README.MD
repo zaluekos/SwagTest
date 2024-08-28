@@ -1,6 +1,8 @@
 ﻿
-Build made for Chrome and Firefox using Fluent Assertions
-Launch URL: https://www.saucedemo.com/
+Saucedemo login test (3cases);
+
+<p> Build made for Chrome and Firefox using Fluent Assertions and CSS selectors.</p>
+<p> Launch URL: https://www.saucedemo.com/ </p>
 
 **UC-1 Test Login form with empty credentials:**
 
