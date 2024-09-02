@@ -5,22 +5,35 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SwagDriverChrome;
 using SwagDriver;
+using static SwagDriver.SupportedBrowsers;
 using SwagLabs.PageObjects.LoginPageObject;
 using SwagLabs;
 using SwagTesting;
+using static SwagTesting.LoginTestData;
+using Xunit;
+//using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-[assembly: Parallelize(Scope = ExecutionScope.MethodLevel)]
+
 namespace SwagLabsTests
 {
+    public class TestFixture : IDisposable
+    {
+        public TestFixture()
+        {
 
-    [TestClass]
-    public class LoginTests
+        }
+
+        public void Dispose()
+        {
+
+        }
+    }
+    public class LoginTests : IClassFixture<TestFixture>, IDisposable
     {
         private IDriverManager driverManager;
-        private static IEnumerable<object[]> CredentialsTestData
+        public static IEnumerable<object[]> CredentialsTestData
         {
             get
             {
@@ -35,8 +48,15 @@ namespace SwagLabsTests
             }
         }
 
-        [DataTestMethod]
-        [DynamicData(nameof(LoginTestData.GetSupportedBrowsers), typeof(LoginTestData), DynamicDataSourceType.Property)]
+        private readonly TestFixture _fixture;
+
+        public LoginTests(TestFixture fixture)
+        {
+            _fixture = fixture;
+        }
+
+        [Theory]
+        [MemberData(nameof(LoginTestData.GetSupportedBrowsers), MemberType = typeof(LoginTestData))]
         public void GivenAnyCredentials_WhenCredentialsEntered_AndCredentialsCleared_AndLoginButtonClicked_ThenErrorMessageShouldBe(string browserName)
         {
             driverManager = new DriverFactory().CreateDriverManager(browserName);
@@ -54,8 +74,8 @@ namespace SwagLabsTests
             steps.ThenErrorMessageShouldBe("Username is required").Should().BeTrue(because: "Username should be entered");
         }
 
-        [DataTestMethod]
-        [DynamicData(nameof(LoginTestData.GetSupportedBrowsers), typeof(LoginTestData), DynamicDataSourceType.Property)]
+        [Theory]
+        [MemberData(nameof(LoginTestData.GetSupportedBrowsers), MemberType = typeof(LoginTestData))]
         public void GivenAnyCredentials_WhenCredentialsEntered_AndPasswordCleared_AndLoginButtonClicked_ThenErrorMessageShouldBe(string browserName)
         {
             driverManager = new DriverFactory().CreateDriverManager(browserName);
@@ -73,8 +93,8 @@ namespace SwagLabsTests
             steps.ThenErrorMessageShouldBe("Password is required").Should().BeTrue(because: "Username should be entered");
         }
 
-        [DataTestMethod]
-        [DynamicData(nameof(CredentialsTestData), DynamicDataSourceType.Property)]
+        [Theory]
+        [MemberData(nameof(CredentialsTestData))]
         public void GivenValidCredentials_WhenCredentialsEntered_AndLoginButtonClicked_ThenLoginSuccessful(string browserName, string givenUsername)
         {
             string validPassword = "secret_sauce";
@@ -92,10 +112,10 @@ namespace SwagLabsTests
             steps.ThenLoginShouldBeSuccessful().Should().BeTrue(because: "Login should be successful with valid credentials");
         }
 
-        [TestCleanup]
-        public void TestCleanup()
+        public void Dispose()
         {
             driverManager.QuitDriver();
         }
     }
+
 }

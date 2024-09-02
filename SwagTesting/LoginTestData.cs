@@ -7,33 +7,28 @@ using SwagDriver;
 
 namespace SwagTesting
 {
-    // Data for tests execution
     public static class LoginTestData
     {
-        public static IEnumerable<object[]> GetSupportedBrowsers
+        public static IEnumerable<object[]> GetSupportedBrowsers()
         {
-            get
+            List<object[]> result = new List<object[]>();
+            foreach (string browser in SupportedBrowsers.Browsers)
             {
-                List<object[]> result = [];
-                foreach (string browser in SupportedBrowsers.Browsers)
-                {
-                    result.Add([browser]);
-                }
-                return result;
+                result.Add(new object[] { browser });
             }
-
+            return result;
         }
+
         public static IEnumerable<object[]> GetLoginWithValidCredentials(IEnumerable<string> availableUsernames)
         {
-            List<object[]> result = [];
+            List<object[]> result = new List<object[]>();
             foreach (string browser in SupportedBrowsers.Browsers)
             {
                 foreach (string username in availableUsernames)
                 {
-                    result.Add([browser, username]);
+                    result.Add(new object[] { browser, username });
                 }
             }
-
             return result;
         }
     }
